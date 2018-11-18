@@ -13,7 +13,7 @@ class Bacteria(pygame.sprite.Sprite):
     def __init__(self):
 
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load('bact2.png').convert_alpha()
+        self.image = pygame.image.load('bactgood.png').convert_alpha()
         self.rect = self.image.get_rect();
         self.rect.move_ip(25,25)
         self.x = random.randrange(0,screen_width-25)
@@ -25,8 +25,57 @@ class Bacteria(pygame.sprite.Sprite):
         surface.blit(self.image, (self.x, self.y))
         self.rect.center=(self.x,self.y)
 
-        
 
+class Badbacteria(pygame.sprite.Sprite):
+
+    def __init__(self):
+
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load('bactbad.png').convert_alpha()
+        self.rect = self.image.get_rect();
+        self.rect.move_ip(25,25)
+        self.x = random.randrange(0,screen_width-25)
+        self.y = random.randrange(0,screen_height-25)
+
+ 
+    def draw(self, surface):
+
+        surface.blit(self.image, (self.x, self.y))
+        self.rect.center=(self.x,self.y)
+
+class SpeedVitamin(pygame.sprite.Sprite):
+
+    def __init__(self):
+
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load('speedvitamin.png').convert_alpha()
+        self.rect = self.image.get_rect();
+        self.rect.move_ip(25,25)
+        self.x = random.randrange(0,screen_width-25)
+        self.y = random.randrange(0,screen_height-25)
+
+ 
+    def draw(self, surface):
+
+        surface.blit(self.image, (self.x, self.y))
+        self.rect.center=(self.x,self.y)
+
+class GrowVitamin(pygame.sprite.Sprite):
+
+    def __init__(self):
+
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load('growvitamin.png').convert_alpha()
+        self.rect = self.image.get_rect();
+        self.rect.move_ip(25,25)
+        self.x = random.randrange(0,screen_width-25)
+        self.y = random.randrange(0,screen_height-25)
+
+ 
+    def draw(self, surface):
+
+        surface.blit(self.image, (self.x, self.y))
+        self.rect.center=(self.x,self.y)
 
 class Kwekwek(pygame.sprite.Sprite):
 
@@ -38,27 +87,21 @@ class Kwekwek(pygame.sprite.Sprite):
         self.rect.move_ip(50,50)
         self.x = 1
         self.y = 1
+        self.speed = 2
         self.rect.center=(self.x,self.y)
         
 
     def draw(self, surface):
 
-        speed = 5
+        
         cursor_x, cursor_y = pygame.mouse.get_pos()
-       # Vector from me to cursor
         dx = cursor_x - self.x
         dy = cursor_y - self.y
-
-        # Unit vector in the same direction
         distance = math.sqrt(dx*dx + dy*dy)
         dx /= distance
         dy /= distance
-
-        # speed-pixel vector in the same direction
-        dx *= speed
-        dy *= speed
-
-        # And now we move:
+        dx *= self.speed
+        dy *= self.speed
         self.x += dx
         self.y += dy
 
@@ -68,7 +111,6 @@ class Kwekwek(pygame.sprite.Sprite):
             self.y = screen_height-50
 
         self.rect.center=(self.x,self.y)
-        
         surface.blit(self.image, (self.x-(self.rect.width/2), self.y-(self.rect.height)/2))
         pygame.display.update()
 
@@ -78,7 +120,15 @@ class Kwekwek(pygame.sprite.Sprite):
         kwek_size2 = self.rect.size
         self.image = pygame.transform.scale(pygame.image.load('kwekwek.png'),(kwek_size2[0]+points,kwek_size2[0]+points))
         self.rect.size=(kwek_size2[0]+points,kwek_size2[0]+points)
-         pygame.display.update()
+        pygame.display.update()
+
+    def shrink(self, points):
+
+        kwek_size2 = self.rect.size
+        self.image = pygame.transform.scale(pygame.image.load('kwekwek.png'),(kwek_size2[0]-points,kwek_size2[0]-points))
+        self.rect.size=(kwek_size2[0]-points,kwek_size2[0]-points)
+        pygame.display.update()
+
 
     def kwek_get_size(self):
 
@@ -106,33 +156,46 @@ bact7 = Bacteria()
 bact8 = Bacteria()
 bact9 = Bacteria()
 bact10 = Bacteria()
+speedvit = SpeedVitamin()
+growvit = GrowVitamin()
 
 bacterium = {
-'bact1' : bact1,
-'bact2' : bact2,
-'bact3' : bact3,
-'bact4' : bact4,
-'bact5' : bact5,
-'bact6' : bact6,
-'bact7' : bact7,
-'bact8' : bact8,
-'bact9' : bact9,
-'bact10' : bact10,
+    'bact1' : bact1,
+    'bact2' : bact2,
+    'bact3' : bact3,
+    'bact4' : bact4,
+    'bact5' : bact5,
+    'bact6' : bact6,
+    'bact7' : bact7,
+    'bact8' : bact8,
+    'bact9' : bact9,
+    'bact10' : bact10,
 }
-#bacterium.append(bact1)
+
+badbact1 = Badbacteria()
+badbact2 = Badbacteria()
+badbact3 = Badbacteria()
+badbact4 = Badbacteria()
+badbact5 = Badbacteria()
+
+badbacterium = {
+    'badbact1' : badbact1,
+    'badbact2' : badbact2,
+    'badbact3' : badbact3,
+    'badbact4' : badbact4,
+    'badbact5' : badbact5,
+}
 
 Clock = pygame.time.Clock()
 
 
 
-#print (kwek.kwek_position())
-
 running = True
-
 
 
 while running:
     screen.fill((255,255,255))
+
     bact1.draw(screen)
     bact2.draw(screen)
     bact3.draw(screen)
@@ -144,11 +207,22 @@ while running:
     bact9.draw(screen)
     bact10.draw(screen)
 
+    badbact1.draw(screen)
+    badbact2.draw(screen)
+    badbact3.draw(screen)
+    badbact4.draw(screen)
+    badbact5.draw(screen)
+
+
+
+    speedvit.draw(screen)
+
+    growvit.draw(screen)
 
     kwek.draw(screen)
 
     kwek_size = kwek.kwek_get_size()
-   
+
 
 
     for i in bacterium:
@@ -156,7 +230,39 @@ while running:
             kwek.grow(5)
             bacterium[i].x = random.randrange(0,screen_width-25)
             bacterium[i].y = random.randrange(0,screen_height-25)
- 
+    
+    for i in badbacterium:
+        if kwek.is_collided_with(badbacterium[i]):
+            kwek.shrink(10)
+            badbacterium[i].x = random.randrange(0,screen_width-25)
+            badbacterium[i].y = random.randrange(0,screen_height-25)
+
+    if kwek.is_collided_with(speedvit):
+        
+        if random.randrange(0,3) % 2 == 0: #33% chance of having effect
+           
+            print ("BOOST")
+            speedvit.x = random.randrange(0,screen_width-25)
+            speedvit.y = random.randrange(0,screen_height-25)
+            kwek.speed += 1
+        else:
+            print ("NO BOOST")
+            speedvit.x = random.randrange(0,screen_width-25)
+            speedvit.y = random.randrange(0,screen_height-25)
+
+    if kwek.is_collided_with(growvit):
+
+        if random.randrange(0,3) % 2 == 0: #33% chance of having effect
+           
+            print ("GROW")
+            growvit.x = random.randrange(0,screen_width-25)
+            growvit.y = random.randrange(0,screen_height-25)
+            kwek.grow(10)
+        else:
+            print ("NO EFFECT")
+            growvit.x = random.randrange(0,screen_width-25)
+            growvit.y = random.randrange(0,screen_height-25)
+
 
     for event in pygame.event.get():
         if event.type == QUIT:
