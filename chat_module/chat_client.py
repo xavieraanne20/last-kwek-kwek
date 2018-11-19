@@ -10,7 +10,6 @@ class Client:
 	def __init__(self,name):
 		# create a protobuf player
 		self.player = self.CreatePlayer(name)
-		print(self.player.name)
 		self.lobby_id = ""
 
 		# create a socket and connect to  server
@@ -124,10 +123,16 @@ class Client:
 			print("Num of Players in lobby: "+str(len(ret.player_list))+"\n")
 		elif packet.type == 5:
 			ret = tcp_packet.TcpPacket.ErrLdnePacket()
+			ret.ParseFromString(data)
+			print("!!! "+ret.err_message+" !!!")
 		elif packet.type == 6:
 			ret = tcp_packet.TcpPacket.ErrLfullPacket()
+			ret.ParseFromString(data)
+			print("!!! "+ret.err_message+" !!!")
 		elif packet.type == 7:
 			ret = tcp_packet.TcpPacket.ErrPacket()
+			ret.ParseFromString(data)
+			print("!!! "+ret.err_message+" !!!")
 
 	def CreateLobbyPacket(self,max_p):
 		lobby_packet = tcp_packet.TcpPacket.CreateLobbyPacket()
