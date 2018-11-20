@@ -85,8 +85,8 @@ class Kwekwek(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(pygame.image.load('kwekwek.png'),(50,50))
         self.rect = self.image.get_rect();
         self.rect.move_ip(50,50)
-        self.x = 1
-        self.y = 1
+        self.x = random.randrange(0,screen_width-25)
+        self.y = random.randrange(0,screen_height-25)
         self.speed = 2
         self.rect.center=(self.x,self.y)
         
@@ -139,13 +139,33 @@ class Kwekwek(pygame.sprite.Sprite):
 
         return self.rect.colliderect(sprite.rect)
 
+class Background(pygame.sprite.Sprite):
+    def __init__(self, image_file, location):
+        pygame.sprite.Sprite.__init__(self)  #call Sprite initializer
+        self.image = pygame.transform.scale(pygame.image.load(image_file),(screen_width, screen_height))
+        self.rect = self.image.get_rect()
+        self.rect.left, self.rect.top = location
+
 
 
 pygame.init()
+pygame.time.get_ticks()/1000
+font = pygame.font.SysFont("Ubuntu", 30)
+
 screen_width = 1000
 screen_height = 800
 screen = pygame.display.set_mode((screen_width,screen_height))
+BackGround = Background('sauce.jpg', [0,0])
+
 kwek = Kwekwek()
+kwek2 = Kwekwek()
+
+kweks = {
+    'kwek1' : kwek,
+    'kwek2' : kwek2,
+}
+
+
 bact1 = Bacteria()
 bact2 = Bacteria()
 bact3 = Bacteria()
@@ -156,8 +176,7 @@ bact7 = Bacteria()
 bact8 = Bacteria()
 bact9 = Bacteria()
 bact10 = Bacteria()
-speedvit = SpeedVitamin()
-growvit = GrowVitamin()
+
 
 bacterium = {
     'bact1' : bact1,
@@ -186,88 +205,123 @@ badbacterium = {
     'badbact5' : badbact5,
 }
 
+speedvit1 = SpeedVitamin()
+speedvit2 = SpeedVitamin()
+speedvit3 = SpeedVitamin()
+speedvit4 = SpeedVitamin()
+
+speedvitamins = {
+    'speedvit1': speedvit1,
+    'speedvit2': speedvit2,
+    'speedvit3': speedvit3,
+    'speedvit4': speedvit4,
+}
+
+growvit1 = GrowVitamin()
+growvit2 = GrowVitamin()
+growvit3 = GrowVitamin()
+growvit4 = GrowVitamin()
+
+growthvitamins = {
+    'growvit1' :growvit1,
+    'growvit2' :growvit2,
+    'growvit3': growvit3,
+    'growvit4' :growvit4,
+
+}
+
 Clock = pygame.time.Clock()
-
-
-
 running = True
 
-
 while running:
-    screen.fill((255,255,255))
 
-    bact1.draw(screen)
-    bact2.draw(screen)
-    bact3.draw(screen)
-    bact4.draw(screen)
-    bact5.draw(screen)
-    bact6.draw(screen)
-    bact7.draw(screen)
-    bact8.draw(screen)
-    bact9.draw(screen)
-    bact10.draw(screen)
+    screen.fill([255, 255, 255])
+    screen.blit(BackGround.image, BackGround.rect)
+    pygame.draw.rect(screen, (255,255,255), (5,5,170,50), 0)
+    pygame.draw.rect(screen, (255,255,255), (675,575,300,200), 5)
+    pygame.draw.rect(screen, (255,255,255), (675,20,300,200), 5)
+    s = pygame.Surface((300,200))  # the size of your rect
+    s.set_alpha(128)                # alpha level
+    s.fill((30,30,30))           # this fills the entire surface
+    screen.blit(s, (675,20))  
 
-    badbact1.draw(screen)
-    badbact2.draw(screen)
-    badbact3.draw(screen)
-    badbact4.draw(screen)
-    badbact5.draw(screen)
+    time_string = "Time: {} ".format(int(pygame.time.get_ticks()/1000))
+    chat_string = "Chat box"
+    top_player_string = "Leaderboard"
+    
+    text = font.render(time_string, True, (0,0,0))
+    text2 = font.render(chat_string, True, (0,0,0))
+    text3 = font.render(top_player_string, True, (255,255,255))
 
-
-
-    speedvit.draw(screen)
-
-    growvit.draw(screen)
-
-    kwek.draw(screen)
-
-    kwek_size = kwek.kwek_get_size()
-
-
+    screen.blit(text, (10, 15))
+    screen.blit(text2, (695,595))
+    screen.blit(text3, (735,25))
+   
+      
 
     for i in bacterium:
-        if kwek.is_collided_with(bacterium[i]):
-            kwek.grow(5)
-            bacterium[i].x = random.randrange(0,screen_width-25)
-            bacterium[i].y = random.randrange(0,screen_height-25)
-    
+        bacterium[i].draw(screen)
+
     for i in badbacterium:
-        if kwek.is_collided_with(badbacterium[i]):
-            kwek.shrink(10)
-            badbacterium[i].x = random.randrange(0,screen_width-25)
-            badbacterium[i].y = random.randrange(0,screen_height-25)
+        badbacterium[i].draw(screen)
 
-    if kwek.is_collided_with(speedvit):
+    for i in speedvitamins:
+        speedvitamins[i].draw(screen)
+
+    for i in growthvitamins:
+        growthvitamins[i].draw(screen)
+
+    for i in kweks:
+        kweks[i].draw(screen)
+
+
+
+    for j in kweks:
+        for i in bacterium:
+            if kweks[j].is_collided_with(bacterium[i]):
+                kweks[j].grow(5)
+                bacterium[i].x = random.randrange(0,screen_width-25)
+                bacterium[i].y = random.randrange(0,screen_height-25)
         
-        if random.randrange(0,3) % 2 == 0: #33% chance of having effect
-           
-            print ("BOOST")
-            speedvit.x = random.randrange(0,screen_width-25)
-            speedvit.y = random.randrange(0,screen_height-25)
-            kwek.speed += 1
-        else:
-            print ("NO BOOST")
-            speedvit.x = random.randrange(0,screen_width-25)
-            speedvit.y = random.randrange(0,screen_height-25)
+        for i in badbacterium:
+            if kweks[j].is_collided_with(badbacterium[i]):
+                kweks[j].shrink(10)
+                badbacterium[i].x = random.randrange(0,screen_width-25)
+                badbacterium[i].y = random.randrange(0,screen_height-25)
+        
+        for i in speedvitamins:
+            if kweks[j].is_collided_with(speedvitamins[i]):
+                
+                if random.randrange(0,3) % 2 == 0: #33% chance of having effect
+                   
+                    print ("BOOST")
+                    speedvitamins[i].x = random.randrange(0,screen_width-25)
+                    speedvitamins[i].y = random.randrange(0,screen_height-25)
+                    kweks[j].speed += 1
+                else:
+                    print ("NO BOOST")
+                    speedvitamins[i].x = random.randrange(0,screen_width-25)
+                    speedvitamins[i].y = random.randrange(0,screen_height-25)
 
-    if kwek.is_collided_with(growvit):
+        for i in growthvitamins:
+            if kweks[j].is_collided_with(growthvitamins[i]):
 
-        if random.randrange(0,3) % 2 == 0: #33% chance of having effect
-           
-            print ("GROW")
-            growvit.x = random.randrange(0,screen_width-25)
-            growvit.y = random.randrange(0,screen_height-25)
-            kwek.grow(10)
-        else:
-            print ("NO EFFECT")
-            growvit.x = random.randrange(0,screen_width-25)
-            growvit.y = random.randrange(0,screen_height-25)
+                if random.randrange(0,3) % 2 == 0: #33% chance of having effect
+                   
+                    print ("GROW")
+                    growthvitamins[i].x = random.randrange(0,screen_width-25)
+                    growthvitamins[i].y = random.randrange(0,screen_height-25)
+                    kweks[j].grow(10)
+                else:
+                    print ("NO EFFECT")
+                    growthvitamins[i].x = random.randrange(0,screen_width-25)
+                    growthvitamins[i].y = random.randrange(0,screen_height-25)
 
 
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
             sys.exit()
-
+    
     pygame.display.update()
     Clock.tick(40)
