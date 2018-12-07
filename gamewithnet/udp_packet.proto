@@ -1,0 +1,30 @@
+syntax = "proto2";
+
+import "kwek.proto";
+
+message UdpPacket {
+	enum PacketType {
+		CREATE_KWEK = 0;
+		GSTATE = 1;
+		MOTION = 2;
+	}
+
+	required PacketType type = 1;
+
+	message CreateKwek  {
+		required PacketType type = 1;
+		optional Kwek kwek = 2;
+	}
+
+	message GameState {
+		required PacketType type = 1;
+		repeated Kwek kweks = 2;
+	}
+
+	message Motion {
+		required PacketType type = 1;
+		required Kwek kwek = 2;
+		required int32 x = 3;
+		required int32 y = 4;
+	}
+}
