@@ -15,20 +15,16 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 # Bind the socket to the port
 server_address = (host,port)
-
 sock.bind(server_address)
-#sock.setblocking(0)
-
-players = []
-kweks = {}
-
-game_state = udp_packet.UdpPacket.GameState()
-game_state.type = 1
+sock.sendto(".".encode(),server_address)
+data, address = sock.recvfrom(4096)
+print(address)
 
 while True:
 	print('\nwaiting to receive message')
 	data, address = sock.recvfrom(4096)
-	#break
+	sock.sendto(".".encode(),address)
+	break
 	'''
 	if data:
 		packet = udp_packet.UdpPacket()
@@ -67,7 +63,7 @@ while True:
 		sent = sock.sendto(game_state.SerializeToString(), a)
 	if len(kweks)==3:
 		break
-'''		
+
 
 
 	if data:
@@ -83,7 +79,7 @@ while True:
 			break
 		received = "DATA: " + data
 		print(received)
-'''
+
 		for a in players:
 			print("sending to",a,":",received)
 			sent = sock.sendto(received.encode(), a)	

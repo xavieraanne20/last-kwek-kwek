@@ -15,32 +15,32 @@ class Client:
 	def __init__(self,name):
 		# create a protobuf player
 		self.name = name
+
+		#local copy of kwekwek innstance
 		self.player = self.CreateKwek(name)
-		self.run = True;
-		#self.lobby_id = ""
+		self.player.name = name
+		self.player.points = 20
+		self.player.dimension.height = 60
+		self.player.dimension.width = 40
+		self.player.position.x = 50
+		self.player.position.y = 50
 
-		self.x = 50
-		self.y = 50
-		self.width = 40
-		self.height = 60
-		self.speed = 10
-
-		self.velocity = 5
+		self.run = True
 
 		# create a socket and connect to  server
 		self.conn = self.CreateSocket()
-		#self.conn.bind(('',0))
-		#binding = self.conn.getsockname()
-		#print(">>>",binding)
 		self.conn.setblocking(0)
 
+		# create pygame window
 		self.window = pygame.display.set_mode((500,500))
-		pygame.display.set_caption("Trial Game")
+		pygame.display.set_caption("Last Kwek-Kwek")
 
-		threading.Thread(target = self.listen).start()
+		
+
+		#threading.Thread(target = self.listen).start()
 
 		#
-		threading.Thread(target = self.send).start()
+		#threading.Thread(target = self.send).start()
 
 #	def listen(self):
 #		while True:
