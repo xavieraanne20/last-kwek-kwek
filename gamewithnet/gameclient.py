@@ -41,6 +41,17 @@ class Client:
 
 		self.conn.sendto(ckwek.SerializeToString(), server_address)		
 
+		data, address = self.conn.recvfrom(4096)
+
+		if data:
+			aa = udp_packet.UdpPacket.CreateKwek()
+			aa.ParseFromString(data)
+
+			print("Kwek kwek registered. Address:",address)
+			print("stats: ")
+			print("name:",aa.kwek.name)
+			print("id:",aa.kwek.name)
+
 
 		#threading.Thread(target = self.listen).start()
 

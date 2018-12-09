@@ -8,19 +8,30 @@ host = "0.0.0.0"
 port = 5001
 
 kweks = []
-
-def handlePacket(packet):
-	if packet.type==0:
-		c_kwek = udp_packet.UdpPacket.CreateKwek()
-		c_kwek.ParseFromString(data)
-
-		kweks.append(c_kwek.kwek)
-		print(str(len(kweks)))
-
+kwek_ids = []
 
 def randomstr(length):
    letters = string.ascii_lowercase
    return ''.join(random.choice(letters) for i in range(length))
+
+def handlePacket(sock,adress,packet):
+	if packet.type==0:
+		c_kwek = udp_packet.UdpPacket.CreateKwek()
+		c_kwek.ParseFromString(data)
+
+		while True:
+			k_id = randomstr(4)
+			if k_id not in kwek_ids:
+				kwek_ids.append(k_id)
+				c_kwek.kwek.id = k_id
+				break
+
+		kweks.append(c_kwek.kwek)
+		print(str(len(kweks)))
+
+		sock.sendto(c_kwek.SerializeToString(),address)
+
+
 
 # Create a TCP/IP socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -39,7 +50,8 @@ while True:
 		packet = udp_packet.UdpPacket()
 		packet.ParseFromString(data)
 
-		handlePacket(packet)
+		handlePacket(sock,address,packet)
+
 
 
 
