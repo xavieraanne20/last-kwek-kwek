@@ -5,7 +5,7 @@ import udp_packet_pb2 as udp_packet
 import pygame
 pygame.init()
 
-host = "192.168.100.17"
+host = "192.168.1.12"
 port = 5001
 
 server_address = (host,port)
@@ -35,7 +35,12 @@ class Client:
 		self.window = pygame.display.set_mode((500,500))
 		pygame.display.set_caption("Last Kwek-Kwek")
 
-		
+		ckwek = udp_packet.UdpPacket.CreateKwek()
+		ckwek.type = 0
+		ckwek.kwek.CopyFrom(self.player)
+
+		self.conn.sendto(ckwek.SerializeToString(), server_address)		
+
 
 		#threading.Thread(target = self.listen).start()
 

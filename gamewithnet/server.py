@@ -4,26 +4,46 @@ import kwek_pb2 as kwek
 import random, string
 import udp_packet_pb2 as udp_packet
 
+host = "0.0.0.0"
+port = 5001
+
+kweks = []
+
+def handlePacket(packet):
+	if packet.type==0:
+		c_kwek = udp_packet.UdpPacket.CreateKwek()
+		c_kwek.ParseFromString(data)
+
+		kweks.append(c_kwek.kwek)
+		print(str(len(kweks)))
+
+
 def randomstr(length):
    letters = string.ascii_lowercase
    return ''.join(random.choice(letters) for i in range(length))
 
-host = "0.0.0.0"
-port = 5001
 # Create a TCP/IP socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 # Bind the socket to the port
 server_address = (host,port)
 sock.bind(server_address)
-sock.sendto(".".encode(),server_address)
-data, address = sock.recvfrom(4096)
-print(address)
+print("Server running.")
 
 while True:
-	print('\nwaiting to receive message')
+	#start receiving messages
 	data, address = sock.recvfrom(4096)
-	sock.sendto(".".encode(),address)
+
+	if data:
+		# create generic UDP Packet
+		packet = udp_packet.UdpPacket()
+		packet.ParseFromString(data)
+
+		handlePacket(packet)
+
+
+
+
 	break
 	'''
 	if data:
@@ -87,6 +107,5 @@ while True:
 		'''
 		#sent = sock.sendto(data, address)
 		# print >>sys.stderr, 'sent %s bytes back to %s' % (sent, address)
-
 
 sock.close()

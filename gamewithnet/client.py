@@ -14,8 +14,6 @@ try:
     # Send data
     #print >>sys.stderr, 'sending "%s"' % message
     sent = sock.sendto(message.encode(), server_address)
-    data, address = sock.recvfrom(4096)
-    print(address)
 
     # Receive response
     #print >>sys.stderr, 'waiting to receive'
