@@ -80,10 +80,13 @@ class Client:
 				data,addr = self.conn.recvfrom(1024)
 				if data:
 					#print(">>",data.decode())
-					packet = udp_packet.UdpPacket()
-					packet.ParseFromString(data)
+					try:
+						packet = udp_packet.UdpPacket()
+						packet.ParseFromString(data)
 
-					print("====>>",packet.type)
+						print("====>>",packet.type)
+					except:
+						print(data.decode())
 					'''if packet.type==1:
 						gspacket = udp_packet.UdpPacket.GameState()
 						gspacket.'''
@@ -148,26 +151,7 @@ class Client:
 		pygame.quit()
 
 	def followCursor(self):
-		#cursor_x, cursor_y = pygame.mouse.get_pos()
 		return pygame.mouse.get_pos()
-		'''dx = cursor_x - self.x
-		dy = cursor_y - self.y
-		distance = math.sqrt(dx*dx + dy*dy)
-		dx /= distance
-		dy /= distance
-		dx *= self.speed
-		dy *= self.speed
-		self.x += dx
-		self.y += dy
-		if self.x >= screen_width-50:
-		    self.x = screen_width-50
-		if self.y >= screen_height-50:
-		    self.y = screen_height-50
-
-		#self.rect.center=(self.x,self.y)
-		#surface.blit(self.image, (self.x-(self.rect.width/2), self.y-(self.rect.height)/2))
-		pygame.draw.rect(self.window,(255,0,0),(self.x,self.y,self.width,self.height))'''
-		#pygame.display.update()
 
 	def CreateKwek(self,usr):
 		nkwek = kwek.Kwek()
