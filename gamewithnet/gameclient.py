@@ -54,7 +54,7 @@ class Client:
 		#threading.Thread(target = self.listen).start()
 
 		#
-		#threading.Thread(target = self.send).start()
+		threading.Thread(target = self.send).start()
 
 #	def listen(self):
 #		while True:
@@ -138,7 +138,7 @@ class Client:
 			#self.window.fill((0,0,0))
 			cx,cy = self.followCursor()
 			#print("x:",cx,", y:",cy)
-			#message = "x: "+str(cx)+", y: "+str(cy)
+			message = "x: "+str(cx)+", y: "+str(cy)
 			#message = "x:"+str(self.x)+";; y:"+str(self.y)
 			sent = self.conn.sendto(message.encode(), server_address)
 			#pygame.draw.rect(self.window,(255,0,0),(self.x,self.y,self.width,self.height))

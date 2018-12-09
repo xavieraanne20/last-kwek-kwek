@@ -47,10 +47,13 @@ while True:
 
 	if data:
 		# create generic UDP Packet
-		packet = udp_packet.UdpPacket()
-		packet.ParseFromString(data)
+		try:
+			packet = udp_packet.UdpPacket()
+			packet.ParseFromString(data)
 
-		handlePacket(sock,address,packet)
+			handlePacket(sock,address,packet)
+		except:
+			print(";-->",data.decode())
 
 
 
