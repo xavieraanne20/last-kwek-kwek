@@ -55,7 +55,7 @@ while True:
 		except:
 			print(";-->",data.decode())
 			sendback = "From " + str(address) + ": " + data.decode()
-			sendto(sendback.encode(),address)
+			sock.sendto(sendback.encode(),address)
 			if data.decode() == "q":
 				break;
 
