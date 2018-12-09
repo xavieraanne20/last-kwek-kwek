@@ -44,13 +44,11 @@ class Client:
 		
 		data, address = self.conn.recvfrom(4096)
 		if data:
+			# Player registered to server
 			aa = udp_packet.UdpPacket.CreateKwek()
 			aa.ParseFromString(data)
 
-			print("Kwek kwek registered. Address:",address)
-			print("stats: ")
-			print("name:",aa.kwek.name)
-			print("id:",aa.kwek.id)
+
 
 
 		#threading.Thread(target = self.listen).start()
@@ -92,12 +90,6 @@ class Client:
 				#self.RecvPacket(data)
 
 	def send(self):
-		kwek = udp_packet.UdpPacket.CreateKwek()
-		kwek.type = udp_packet.UdpPacket.CREATE_KWEK
-		kwek.kwek.CopyFrom(self.player)
-
-		self.conn.sendto(kwek.SerializeToString(),server_address)
-
 		while self.run:
 			# 0.1 seconds
 			pygame.time.delay(100) 
@@ -143,14 +135,14 @@ class Client:
 				finally:
 					pass
 			'''
-			self.window.fill((0,0,0))
+			#self.window.fill((0,0,0))
 			cx,cy = self.followCursor()
-			print("x:",cx,", y:",cy)
-			message = "x: "+str(cx)+", y: "+str(cy)
+			#print("x:",cx,", y:",cy)
+			#message = "x: "+str(cx)+", y: "+str(cy)
 			#message = "x:"+str(self.x)+";; y:"+str(self.y)
 			sent = self.conn.sendto(message.encode(), server_address)
 			#pygame.draw.rect(self.window,(255,0,0),(self.x,self.y,self.width,self.height))
-			pygame.display.update()
+			#pygame.display.update()
 
 		self.conn.close()
 		pygame.quit()
