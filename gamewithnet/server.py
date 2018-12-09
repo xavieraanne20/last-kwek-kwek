@@ -8,8 +8,12 @@ host = "0.0.0.0"
 port = 5001
 
 adrs = []
-kweks = []
+#kweks = []
 kwek_ids = []
+
+game_state = udp_packet.UdpPacket.GameState()
+game_state.type = 1
+
 
 def randomstr(length):
    letters = string.ascii_lowercase
@@ -26,11 +30,26 @@ def handlePacket(sock,adress,packet):
 				kwek_ids.append(k_id)
 				c_kwek.kwek.id = k_id
 				break
-
-		kweks.append(c_kwek.kwek)
-		print(str(len(kweks)))
+		if c_kwek.kwek not in game_state.kweks:
+			kk = game_state.kweks.add()
+			kk.CopyFrom(c_kwek.kwek)
+		#kweks.append(c_kwek.kwek)
+		#print(str(len(kweks)))
 
 		sock.sendto(c_kwek.SerializeToString(),address)
+	if packet.type == 2:
+		move = udp_packet.UdpPacket.Motion()
+		move.ParseFromString(data)
+		
+		for k in game_state.kweks:
+			if k.id == move.kwek.id:
+				k.CopyFrom(move.kwek)
+				k.position.x = move.x
+				k.position.y = move.y
+
+		sock.sendto(game_state.SerializeToString(),address)
+
+
 
 
 
@@ -49,6 +68,7 @@ while True:
 	if data:
 		# create generic UDP Packet
 		if address not in adrs:
+			# add address to list of clients
 			adrs.append(address)
 		try:
 			packet = udp_packet.UdpPacket()

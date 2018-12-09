@@ -84,7 +84,12 @@ class Client:
 						packet = udp_packet.UdpPacket()
 						packet.ParseFromString(data)
 
-						print("====>>",packet.type)
+						if packet.type == 1:
+							gs = udp_packet.UdpPacket.GameState()
+							gs.ParseFromString(data)
+
+							for k in gs.kweks:
+								print(k.name)
 					except:
 						print(data.decode())
 					'''if packet.type==1:
@@ -105,45 +110,25 @@ class Client:
 			keys = pygame.key.get_pressed()
 			if keys[pygame.K_UP]:
 				self.run = False
-			'''
-			keys = pygame.key.get_pressed()
 
-			if keys[pygame.K_LEFT]:
-				self.x -= self.velocity
-				message = "new x: " + str(self.x)
-				try:
-					sent = self.conn.sendto(message.encode(), server_address)
-				finally:
-					pass
-			if keys[pygame.K_RIGHT]:
-				self.x += self.velocity
-				message = "new x: " + str(self.x)
-				try:
-					sent = self.conn.sendto(message.encode(), server_address)
-				finally:
-					pass
-			if keys[pygame.K_UP]:
-				self.run = False
-				#y -= velocity
-				message = "q"
-				try:
-					sent = self.conn.sendto(message.encode(), server_address)
-				finally:
-					pass
-			if keys[pygame.K_DOWN]:
-				self.y += self.velocity
-				message = "new y: " + str(self.y)
-				try:
-					sent = self.conn.sendto(message.encode(), server_address)
-				finally:
-					pass
-			'''
 			#self.window.fill((0,0,0))
 			cx,cy = self.followCursor()
 			#print("x:",cx,", y:",cy)
 			message = "x: "+str(cx)+", y: "+str(cy)
+
+			# create a motion packet
+
+			mpacket = udp_packet.UdpPacket.Motion()
+			mpacket.type = 2
+			mpacket.kwek.CopyFrom(self.player)
+			mpacket.x = cx
+			mpacket.y = cy
+
+			sent = self.conn.sendto(mpacket.SerializeToString(), server_address)
+
+
 			#message = "x:"+str(self.x)+";; y:"+str(self.y)
-			sent = self.conn.sendto(message.encode(), server_address)
+			#sent = self.conn.sendto(message.encode(), server_address)
 			#pygame.draw.rect(self.window,(255,0,0),(self.x,self.y,self.width,self.height))
 			#pygame.display.update()
 
