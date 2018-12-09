@@ -29,7 +29,7 @@ class Client:
 
 		# create a socket and connect to  server
 		self.conn = self.CreateSocket()
-		self.conn.setblocking(0)
+		#self.conn.setblocking(0)
 
 		# create pygame window
 		self.window = pygame.display.set_mode((500,500))
