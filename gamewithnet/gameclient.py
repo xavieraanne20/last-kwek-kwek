@@ -50,7 +50,7 @@ class Client:
 			print("Kwek kwek registered. Address:",address)
 			print("stats: ")
 			print("name:",aa.kwek.name)
-			print("id:",aa.kwek.name)
+			print("id:",aa.kwek.id)
 
 
 		#threading.Thread(target = self.listen).start()
