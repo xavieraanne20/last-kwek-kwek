@@ -7,6 +7,7 @@ import udp_packet_pb2 as udp_packet
 host = "0.0.0.0"
 port = 5001
 
+adrs = []
 kweks = []
 kwek_ids = []
 
@@ -47,6 +48,8 @@ while True:
 
 	if data:
 		# create generic UDP Packet
+		if address not in adrs:
+			adrs.append(address)
 		try:
 			packet = udp_packet.UdpPacket()
 			packet.ParseFromString(data)
@@ -55,7 +58,8 @@ while True:
 		except:
 			print(";-->",data.decode())
 			sendback = "From " + str(address) + ": " + data.decode()
-			sock.sendto(sendback.encode(),address)
+			for a in adrs:
+				sock.sendto(sendback.encode(),a)
 			if data.decode() == "q":
 				break;
 
