@@ -40,7 +40,7 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 server_address = (host,port)
 sock.bind(server_address)
 print("Server running.")
-
+count = 0
 while True:
 	#start receiving messages
 	data, address = sock.recvfrom(4096)
@@ -55,11 +55,13 @@ while True:
 		except:
 			print(";-->",data.decode())
 
+	count += 1
+	if (count ==600):
+		break
 
 
 
-
-	break
+	#break
 	'''
 	if data:
 		packet = udp_packet.UdpPacket()
