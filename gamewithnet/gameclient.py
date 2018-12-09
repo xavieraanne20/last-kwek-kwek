@@ -51,7 +51,7 @@ class Client:
 
 
 
-		#threading.Thread(target = self.listen).start()
+		threading.Thread(target = self.listen).start()
 
 		#
 		threading.Thread(target = self.send).start()
