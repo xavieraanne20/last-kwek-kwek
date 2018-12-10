@@ -1,7 +1,7 @@
 import socket
 import sys
 
-host = "192.168.1.12"
+host = "192.168.100.17"
 port = 5001
 # Create a UDP socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

@@ -1,5 +1,5 @@
 import socket
-import sys
+import sys, math
 import kwek_pb2 as kwek
 import random, string
 import udp_packet_pb2 as udp_packet
@@ -19,6 +19,34 @@ def randomstr(length):
    letters = string.ascii_lowercase
    return ''.join(random.choice(letters) for i in range(length))
 
+def handleMotion(x,y,kwek):
+	dx = x - kwek.position.x
+	dy = y - kwek.position.y
+	print("1:",str(dx),str(dy))
+	distance = math.sqrt(dx*dx + dy*dy)
+	dx /= distance
+	dy /= distance
+	print("2:",str(dx),str(dy))
+	dx *= kwek.velocity
+	dy *= kwek.velocity
+	print("3:",str(dx),str(dy))
+	kwek.position.x += dx
+	kwek.position.y += dy
+	screen_width = screen_height = 500
+	#print("new:",str(kwek.position.x),str(kwek.position.y))
+	#if kwek.position.x >= screen_width-50:
+	#	kwek.position.x = screen_width-50
+	#if kwek.position.y >= screen_height-50:
+	#	kwek.position.y = screen_height-50
+	#kwek.position.x -= kwek.dimension.width/2
+	#kwek.position.y -= kwek.dimension.height/2
+	print("new:",str(kwek.position.x),str(kwek.position.y))
+	#surface.blit(self.image, (self.x-(self.rect.width/2), self.y-(self.rect.height)/2))
+
+	#print("old:",str(x),str(y))
+	
+	#return float(x),float(y)
+
 def handlePacket(sock,adress,packet):
 	if packet.type==0:
 		c_kwek = udp_packet.UdpPacket.CreateKwek()
@@ -33,6 +61,7 @@ def handlePacket(sock,adress,packet):
 		if c_kwek.kwek not in game_state.kweks:
 			kk = game_state.kweks.add()
 			kk.CopyFrom(c_kwek.kwek)
+			print("-+-+->",len(game_state.kweks))
 		#kweks.append(c_kwek.kwek)
 		#print(str(len(kweks)))
 
@@ -40,12 +69,15 @@ def handlePacket(sock,adress,packet):
 	if packet.type == 2:
 		move = udp_packet.UdpPacket.Motion()
 		move.ParseFromString(data)
-		
+
 		for k in game_state.kweks:
 			if k.id == move.kwek.id:
+				print("found-----------")
+				#newx, newy = 
+				handleMotion(move.x,move.y,move.kwek)
 				k.CopyFrom(move.kwek)
-				k.position.x = move.x
-				k.position.y = move.y
+				#k.position.x = move.x
+				#k.position.y = move.y
 
 		sock.sendto(game_state.SerializeToString(),address)
 
@@ -82,75 +114,5 @@ while True:
 				sock.sendto(sendback.encode(),a)
 			if data.decode() == "q":
 				break;
-
-#	count += 1
-#	if (count ==600):
-#		break
-
-
-
-	#break
-	'''
-	if data:
-		packet = udp_packet.UdpPacket()
-		packet.ParseFromString(data)
-
-		print("huh:",packet.type)
-		if packet.type == 0:
-			if address not in players:
-				#addr = (address,port)
-				#print("added ",address)
-				players.append(address)
-
-			c_kwek = udp_packet.UdpPacket.CreateKwek()
-			c_kwek.ParseFromString(data)
-			c_kwek.kwek.id = randomstr(3)
-
-			kwek = c_kwek.kwek
-			kweks[kwek.id] = address
-
-			newkwek = game_state.kweks.add()
-			newkwek.name = kwek.name
-			newkwek.id = kwek.id
-		elif packet.type == 2:
-			motion = udp_packet.UdpPacket.Motion()
-			motion.ParseFromString(data)
-
-			for k in game_state.kweks:
-				if k.id == motion.kwek.id:
-					k.position.x = motion.kwek.position.x
-					k.position.y = motion.kwek.position.y
-
-		
-	for k in kweks:
-		print(k,"--",kweks[k])
-	for a in players:
-		sent = sock.sendto(game_state.SerializeToString(), a)
-	if len(kweks)==3:
-		break
-
-
-
-	if data:
-		print(address)
-		if address not in players:
-			#addr = (address,port)
-			print("added ",address)
-			players.append(address)
-
-		data = data.decode()
-
-		if data == "q":
-			break
-		received = "DATA: " + data
-		print(received)
-
-		for a in players:
-			print("sending to",a,":",received)
-			sent = sock.sendto(received.encode(), a)	
-
-		'''
-		#sent = sock.sendto(data, address)
-		# print >>sys.stderr, 'sent %s bytes back to %s' % (sent, address)
 
 sock.close()

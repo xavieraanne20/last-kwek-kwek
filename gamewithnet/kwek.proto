@@ -6,8 +6,8 @@ message Kwek {
 	optional int32 points = 3;
 
 	message Dimension {
-		optional int32 height =  1;
-		optional int32 width =  2;
+		optional float height =  1;
+		optional float width =  2;
 	}
 
 	message Position {

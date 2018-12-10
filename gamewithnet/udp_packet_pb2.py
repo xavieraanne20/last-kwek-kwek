@@ -21,7 +21,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto2',
   serialized_options=None,
-  serialized_pb=_b('\n\x10udp_packet.proto\x1a\nkwek.proto\"\xd1\x02\n\tUdpPacket\x12#\n\x04type\x18\x01 \x02(\x0e\x32\x15.UdpPacket.PacketType\x1a\x46\n\nCreateKwek\x12#\n\x04type\x18\x01 \x02(\x0e\x32\x15.UdpPacket.PacketType\x12\x13\n\x04kwek\x18\x02 \x01(\x0b\x32\x05.Kwek\x1a\x46\n\tGameState\x12#\n\x04type\x18\x01 \x02(\x0e\x32\x15.UdpPacket.PacketType\x12\x14\n\x05kweks\x18\x02 \x03(\x0b\x32\x05.Kwek\x1aX\n\x06Motion\x12#\n\x04type\x18\x01 \x02(\x0e\x32\x15.UdpPacket.PacketType\x12\x13\n\x04kwek\x18\x02 \x02(\x0b\x32\x05.Kwek\x12\t\n\x01x\x18\x03 \x02(\x05\x12\t\n\x01y\x18\x04 \x02(\x05\"5\n\nPacketType\x12\x0f\n\x0b\x43REATE_KWEK\x10\x00\x12\n\n\x06GSTATE\x10\x01\x12\n\n\x06MOTION\x10\x02')
+  serialized_pb=_b('\n\x10udp_packet.proto\x1a\nkwek.proto\"\xd1\x02\n\tUdpPacket\x12#\n\x04type\x18\x01 \x02(\x0e\x32\x15.UdpPacket.PacketType\x1a\x46\n\nCreateKwek\x12#\n\x04type\x18\x01 \x02(\x0e\x32\x15.UdpPacket.PacketType\x12\x13\n\x04kwek\x18\x02 \x01(\x0b\x32\x05.Kwek\x1a\x46\n\tGameState\x12#\n\x04type\x18\x01 \x02(\x0e\x32\x15.UdpPacket.PacketType\x12\x14\n\x05kweks\x18\x02 \x03(\x0b\x32\x05.Kwek\x1aX\n\x06Motion\x12#\n\x04type\x18\x01 \x02(\x0e\x32\x15.UdpPacket.PacketType\x12\x13\n\x04kwek\x18\x02 \x02(\x0b\x32\x05.Kwek\x12\t\n\x01x\x18\x03 \x02(\x02\x12\t\n\x01y\x18\x04 \x02(\x02\"5\n\nPacketType\x12\x0f\n\x0b\x43REATE_KWEK\x10\x00\x12\n\n\x06GSTATE\x10\x01\x12\n\n\x06MOTION\x10\x02')
   ,
   dependencies=[kwek__pb2.DESCRIPTOR,])
 
@@ -151,15 +151,15 @@ _UDPPACKET_MOTION = _descriptor.Descriptor(
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='x', full_name='UdpPacket.Motion.x', index=2,
-      number=3, type=5, cpp_type=1, label=2,
-      has_default_value=False, default_value=0,
+      number=3, type=2, cpp_type=6, label=2,
+      has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='y', full_name='UdpPacket.Motion.y', index=3,
-      number=4, type=5, cpp_type=1, label=2,
-      has_default_value=False, default_value=0,
+      number=4, type=2, cpp_type=6, label=2,
+      has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),

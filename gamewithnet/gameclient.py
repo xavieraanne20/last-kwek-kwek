@@ -5,7 +5,7 @@ import udp_packet_pb2 as udp_packet
 import pygame
 pygame.init()
 
-host = "192.168.1.12"
+host = "192.168.100.17"
 port = 5001
 
 server_address = (host,port)
@@ -22,8 +22,9 @@ class Client:
 		self.player.points = 20
 		self.player.dimension.height = 60
 		self.player.dimension.width = 40
-		self.player.position.x = 50
-		self.player.position.y = 50
+		self.player.position.x = 250
+		self.player.position.y = 250
+		self.player.velocity = 6
 
 		self.run = True
 
@@ -47,6 +48,7 @@ class Client:
 			# Player registered to server
 			aa = udp_packet.UdpPacket.CreateKwek()
 			aa.ParseFromString(data)
+			self.player.CopyFrom(aa.kwek)
 
 
 
@@ -88,8 +90,15 @@ class Client:
 							gs = udp_packet.UdpPacket.GameState()
 							gs.ParseFromString(data)
 
+
+							self.window.fill((0,0,0))
 							for k in gs.kweks:
-								print(k.name)
+								#print(k.name)
+								#print("PPPPPPPPPPPPPos x:",k,position.x,"y:",k.position.y)
+								if k.id == self.player.id:
+									self.player.CopyFrom(k)
+								pygame.draw.rect(self.window,(255,0,0),(k.position.x,k.position.y,k.dimension.width,k.dimension.height))
+							pygame.display.update()
 					except:
 						print(data.decode())
 					'''if packet.type==1:
@@ -111,7 +120,6 @@ class Client:
 			if keys[pygame.K_UP]:
 				self.run = False
 
-			#self.window.fill((0,0,0))
 			cx,cy = self.followCursor()
 			#print("x:",cx,", y:",cy)
 			message = "x: "+str(cx)+", y: "+str(cy)
@@ -129,6 +137,7 @@ class Client:
 
 			#message = "x:"+str(self.x)+";; y:"+str(self.y)
 			#sent = self.conn.sendto(message.encode(), server_address)
+			#self.window.fill((0,0,0))
 			#pygame.draw.rect(self.window,(255,0,0),(self.x,self.y,self.width,self.height))
 			#pygame.display.update()
 
