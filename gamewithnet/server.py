@@ -78,6 +78,8 @@ def handlePacket(sock,adress,packet):
 				k.CopyFrom(move.kwek)
 				#k.position.x = move.x
 				#k.position.y = move.y
+			 # CHECK FOR COLLISIONS HERE
+			 # COLLISIONS WITH BACTERIA ETC
 
 		sock.sendto(game_state.SerializeToString(),address)
 
