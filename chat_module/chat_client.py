@@ -1,9 +1,21 @@
+import os
+import sys
+
 import socket, threading, select, struct
 import tcp_packet_pb2 as tcp_packet
-from proto import player_pb2 as player
+import player_pb2 as player
+import pygame
+
+script_dir = sys.path[0]
+script_dir = script_dir[:-4]
+chat_path = os.path.join(script_dir, 'proto/')
+sys.path.insert(0, chat_path)
+
+
 
 host = "202.92.144.45"
 port = 80
+buffer=  1024
 
 class Client:
 
@@ -153,13 +165,18 @@ class Client:
 		self.conn.connect((host,port))
 
 if __name__ == "__main__":
+	background = (255,255,255)
+	(width, height) = (300,500)
+	chat_panel = pygame.display.set_mode((width, height))
+	pygame.display.set_caption('Kwekwek Sauce')
+	chat_panel.fill(background)
+	pygame.display.flip()
+	running = True
+	while running:
+	  for event in pygame.event.get():
+	    if event.type == pygame.QUIT:
+	      running = False
+
 	usr = input("name: ")
 	Client(usr)
-	#usr = CreatePlayer(usr)
 
-	#conn = CreateSocket()
-	#conn.connect((host,port))
-
-	#print("Connected to "+ host)
-
-	#conn.close()
