@@ -1,7 +1,8 @@
 import socket, threading, select, struct
 import tcp_packet_pb2 as tcp_packet
 import player_pb2 as play
-"GUI"
+
+#GUI
 import tkinter as tk
 from tkinter import *
 import os
@@ -10,7 +11,8 @@ from tkinter.simpledialog import askstring,askinteger
 host = "202.92.144.45"
 port = 80
 top = tk.Tk()
-top.title("Kwek Messenger")
+top.configure(background="black")
+top.title("Kwek CHAT")
 top.geometry("300x600")
 globalmax_p=5
 def proceed(even=None):
@@ -35,7 +37,7 @@ def getPlayer():
 
 	lobby_id = lobid.get()
 	labelID['text'] = "LOBBY ID:" +lobby_id
-	mainPage.withdraw()
+	mainPage.withdraw() #Removes the window from the screen, without destroying it.
 	player = ConnectPacket(sock,player,lobby_id)
 	playerList=PlayerListPacket()
 	packetListener = threading.Thread(target=RecvPacket,args=(sock,player),daemon=True)
@@ -51,24 +53,30 @@ def getRad():
 		print("not hello")
 		lobby_id = CreateLobbyPacket(sock)
 
-mainPage=tk.Toplevel()
-mainPage.title("PLEASE ENTER DETAILS TO PROCEED")
-mainPage.geometry('300x200')
+mainPage=tk.Toplevel(bg="black",bd=2)
+mainPage.maxsize(350,100)
+mainPage.title("CLIENT WINDOW")
+mainPage.geometry('350x100')
 mainPage.attributes('-topmost','true')
 
+#----------CLIENT WINDOW
+a = tk.Label(mainPage,text="KWEK CHAT",bg="black",fg="orange").grid(row=2,column=1)
+b = tk.Label(mainPage, text="Lobby ID: ",bg="black",fg="orange").grid(row=3)
+lobid= tk.Entry(mainPage, width=25, fg="black",bg="orange",bd=0)
+lobid.grid(row=3, column=1)
+c = tk.Label(mainPage, text="Player name: ",bg="black",fg="orange").grid(row=4)
+playername = tk.Entry(mainPage, width=25, fg="black",bg="orange",bd=0)
+playername.grid(row=4, column=1)
+enter1 = tk.Button(mainPage,text='Enter game',bd=0,bg="black",relief="ridge",fg="white",activebackground="orange",activeforeground="white",command=getPlayer).grid(row=7, column=1)
+#----------CLIENT WINDOW
 
-w = tk.Label(mainPage, text="Lobby ID: ").grid(row=2)
-lobid= tk.Entry(mainPage, width=20, fg="blue")
-lobid.grid(row=2, column=1)
-z = tk.Label(mainPage, text="Player name: ").grid(row=3)
-playername = tk.Entry(mainPage, width=20, fg="blue")
-playername.grid(row=3, column=1)
-enter1 = tk.Button(mainPage,text='Enter game',command=getPlayer).grid(row=5, column=1)
-chatarea = tk.Text(top, state='disabled', height=35, width=55, fg="blue")
+
+chatarea = tk.Text(top, state='disabled', height=35, width=55, bg="black",fg="orange",bd=5)
 chatarea.pack()
-entry = tk.Entry(top,  bd=5, width=50)
+
+entry = tk.Entry(top,  bd=2, width=50,bg="orange",fg="black")
 entry.pack()
-button = tk.Button(top,text='Submit',command=proceed)
+button = tk.Button(top,bd=3,bg='orange',fg="black",relief="ridge",activebackground="black",activeforeground="orange",text='Send Message',command=proceed)
 top.bind('<Return>', proceed)
 
 button.pack()
@@ -250,10 +258,8 @@ def ConnectToServer():
 
 
 
-
-
 messages_frame = tk.Frame(top)
-labelID = tk.Label(top,text="",font=('Helvetica', '15'), fg="blue")
+labelID = tk.Label(top,text="",font=('Helvetica', '15'), fg="orange",bg="black")
 labelID.pack()
 
 player=""
