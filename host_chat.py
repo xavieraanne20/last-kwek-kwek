@@ -1,7 +1,12 @@
+'''
+ABOUT THE PROGRAM:
+	NAME: KWEK CHAT
+	PURPORSE:	HOST SETS THE CREATIION OF LOBBY THEN  CAN PROCEED TO CHAT
+'''
 import socket, threading, select, struct
 import tcp_packet_pb2 as tcp_packet
 import player_pb2 as play
-"GUI"
+#USED TKINTER FOR USER INTERFACE
 import tkinter as tk
 from tkinter import *
 import os
@@ -9,6 +14,7 @@ from tkinter.simpledialog import askstring,askinteger
 
 host = "202.92.144.45"
 port = 80
+
 top = tk.Tk()
 top.configure(background="black")
 top.title("Kwek Messenger")
@@ -26,28 +32,31 @@ def CreateLobbyPacket(sock):
 	lobby_id = packet.lobby_id
 	return lobby_id
 
+#FOR GETTING THE USER'S MSG
 def proceed(even=None):
 	message = entry.get()
-	packet =tcp_packet.TcpPacket.ChatPacket(
-		type= tcp_packet.TcpPacket.CHAT,
-		lobby_id = lobby_id,		
-		player=player,
-		message=message
-		#print(messages_frame)
-	)
+	if (message=="show_players" or message=="show players" or message=="SHOW PLAYERS"):
+
+		packet = tcp_packet.TcpPacket.PlayerListPacket(
+			type = tcp_packet.TcpPacket.PLAYER_LIST
+		)
+	else:
+		packet =tcp_packet.TcpPacket.ChatPacket(
+			type= tcp_packet.TcpPacket.CHAT,
+			lobby_id = lobby_id,		
+			player=player,
+			message=message
+		)
 	sock.send(packet.SerializeToString())
 	entry.delete(0, tk.END)
 
-
+#GETS THE USER'S NAME AND THE LOBBY ID (S)HE WANTS TO JOIN
 def getPlayer():
 	global player,lobby_id,msg,playerList,packetListener,data,max_p
 	player=play.Player(	
 		name = playername.get()
 	)
-
-
 	lobby_id = CreateLobbyPacket(sock)
-
 	labelID['text'] = "LOBBY ID:" +lobby_id
 	mainPage.withdraw()
 	player = ConnectPacket(sock,player,lobby_id)
@@ -55,6 +64,7 @@ def getPlayer():
 	packetListener = threading.Thread(target=RecvPacket,args=(sock,player),daemon=True)
 	packetListener.start()
 
+#----------HOST WINDOW
 mainPage=tk.Toplevel(bg="black")
 mainPage.title("HOST WINDOW")
 mainPage.geometry('300x80')
@@ -65,16 +75,18 @@ z = tk.Label(mainPage, text="Player name: ",bg="black",fg="orange").grid(row=3)
 playername = tk.Entry(mainPage, width=20, fg="black",bg="orange",bd=0)
 playername.grid(row=3, column=1)
 enter1 = tk.Button(mainPage,text='Enter game',activebackground="orange",activeforeground="white",bd=0,bg="black",fg="orange",command=getPlayer).grid(row=5, column=1)
+#----------HOST WINDOW
+
+#CHAT INPUT BOX FOR THE  MESSAGE
 chatarea = tk.Text(top, state='disabled', height=35, width=55, bg="black",fg="orange",bd=5)
 chatarea.pack()
 entry = tk.Entry(top,  bd=2, width=50,bg="orange",fg="black")
 entry.pack()
 button = tk.Button(top,bd=3,bg='orange',fg="black",relief="ridge",activebackground="black",activeforeground="orange",text='Send Message',command=proceed)
 top.bind('<Return>', proceed)
-
 button.pack()
-#R1.pack( anchor = W )
-#R2.pack( anchor = W )
+
+
 def __init__(name):
 	# create a protobuf player
 
@@ -84,18 +96,14 @@ def __init__(name):
 	# create a socket and connect to  server
 	conn = CreateSocket()
 	ConnectToServer()
-
 	threading.Thread(target = listen).start()
 
-	#
 	threading.Thread(target = send).start()
 
-#def listen():
-	
 			
 
 def send():
-	#CLIENT ENTER LOBBY
+	#HOST ENTERS LOBBY
 	while True:
 		disconn = False
 		if(lobby_id==""):
@@ -126,16 +134,16 @@ def ChatPacket(data):
 	return chatp.SerializeToString()
 
 def PlayerListPacket():
-	plist = tcp_packet.TcpPacket.PlayerListPacket()
-	plist.type = tcp_packet.TcpPacket.PLAYER_LIST
-
-	return plist.SerializeToString()
+	packet = tcp_packet.TcpPacket.PlayerListPacket(
+		type = tcp_packet.TcpPacket.PLAYER_LIST
+	)
+	return packet.SerializeToString()
 
 def DisconnectPacket():
-	dc_packet = tcp_packet.TcpPacket.DisconnectPacket()				
-	dc_packet.type = tcp_packet.TcpPacket.DISCONNECT
-
-	return dc_packet.SerializeToString()
+	packet = tcp_packet.TcpPacket.DisconnectPacket(	
+		type = tcp_packet.TcpPacket.DISCONNECT
+	)
+	return packet.SerializeToString()
 
 
 def ConnectPacket(sock,player,lobby_id):
@@ -149,13 +157,14 @@ def ConnectPacket(sock,player,lobby_id):
 	packet.ParseFromString(data)
 	return packet.player
 
-
+#RECEIVE PACKET, IDENTIFY IF WHAT KIND OF PACKET IS BEING SENT BY SENDER
 def RecvPacket(sock,player):
 	
 	packet = tcp_packet.TcpPacket()
 	while True:
 		data = sock.recv(1024)	
 		packet.ParseFromString(data)
+		#USER DISCONNECTED FROM THE CHAT
 		if packet.type == 0:
 			ret = tcp_packet.TcpPacket.DisconnectPacket()
 			ret.ParseFromString(data)
@@ -164,71 +173,70 @@ def RecvPacket(sock,player):
 			chatarea.configure(state = 'normal')
 			chatarea.insert(tk.END,ret.player.name + " has disconnected [" + str(ret.update) + "]\n")
 			chatarea.configure(state = 'disabled')	
-			#print(ret.player.name + " has disconnected [" + str(ret.update) + "]")
+		
+		#A NEW USER ENTERED THE LOBBY	
 		elif packet.type == 1:
 			ret = tcp_packet.TcpPacket.ConnectPacket()
 			ret.ParseFromString(data)
 			chatarea.configure(state = 'normal')
-			chatarea.insert(tk.END,ret.player.name + 'has entered the lobby. \n')
+			chatarea.insert(tk.END,ret.player.name + ' has entered the lobby. \n')
 			chatarea.configure(state = 'disabled')
-			#print(ret.player.name + " has entered the lobby.")
 			lobby_id = ret.lobby_id
+
+		#HOST CREATED LOBBY PACKET 
 		elif packet.type == 2:
 			ret = tcp_packet.TcpPacket.CreateLobbyPacket()
 			ret.ParseFromString(data)
 			chatarea.configure(state = 'normal')
 			chatarea.insert(tk.END,'Created lobby:' + ret.lobby_id + "\n")
 			chatarea.configure(state = 'disabled')
-			#print("Created lobby: " + ret.lobby_id)
+			
+		#USER'S MESSAGE SENT	
 		elif packet.type == 3:
 			ret = tcp_packet.TcpPacket.ChatPacket()
 			ret.ParseFromString(data)
 			chatarea.configure(state = 'normal')
-			chatarea.insert(tk.END,ret.player.name + '>>' + ret.message + "\n")
+			chatarea.insert(tk.END,ret.player.name + ':\t' + ret.message + "\n")
 			chatarea.configure(state = 'disabled')
-			#print(ret.player.name + ">> " + ret.message)
+		
+		#SHOW PLAYER LIST
 		elif packet.type == 4:
 			ret = tcp_packet.TcpPacket.PlayerListPacket()
 			ret.ParseFromString(data)
-			#print(ret.player_list)
-			#print("\nPlayer list:")
 			chatarea.configure(state = 'normal')
 			chatarea.insert(tk.END,"Player list:\n")
 			chatarea.configure(state = 'disabled')
 			for p in ret.player_list:
-			#	print("\t> "+p.name+"; id: "+p.id)
 				chatarea.configure(state = 'normal')
-				chatarea.insert(tk.END, "\t>" + p.name + "; id:" + p.id + "\n")
+				chatarea.insert(tk.END, "\t> " + p.name + "; id:" + p.id + "\n")
 				chatarea.configure(state = 'disabled')
-			#print("Num of Players in lobby: "+str(len(ret.player_list))+"\n")
 			chatarea.configure(state = 'normal')
-			chatarea.insert("Num of Players in lobby" + str(len(ret.player_list)) + "\n")
+			chatarea.insert(tk.END,"Num of Players in lobby" + str(len(ret.player_list)) + "\n")
 			chatarea.configure(state = 'disabled')
+
+		#ERROR MESSAGES			
 		elif packet.type == 5:
 			ret = tcp_packet.TcpPacket.ErrLdnePacket()
 			ret.ParseFromString(data)
-			#print("!!! "+ret.err_message+" !!!")
 			chatarea.configure(state = 'normal')
 			chatarea.insert(tk.END,"!!! "+ret.err_message+" !!!\n")
 			chatarea.configure(state = 'disabled')
+		
 		elif packet.type == 6:
 			ret = tcp_packet.TcpPacket.ErrLfullPacket()
 			ret.ParseFromString(data)
-			#print("!!! "+ret.err_message+" !!!")
 			chatarea.configure(state = 'normal')
 			chatarea.insert(tk.END,"!!! "+ret.err_message+" !!!\n")
 			chatarea.configure(state = 'disabled')
+		
 		elif packet.type == 7:
 			ret = tcp_packet.TcpPacket.ErrPacket()
 			ret.ParseFromString(data)
-			#print("!!! "+ret.err_message+" !!!")
 			chatarea.configure(state = 'normal')
 			chatarea.insert(tk.END,"!!! "+ret.err_message+" !!!\n")
 			chatarea.configure(state = 'disabled')
 
-
-
-
+#CREATES NEW PLAYER
 def CreatePlayer(player):
 	nplayer = player.Player()
 	nplayer.name = player
