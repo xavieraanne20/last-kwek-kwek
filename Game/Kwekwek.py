@@ -311,7 +311,7 @@ def image_button(x_position, y_position, button_width, button_height, mode):
 pygame.init()
 pygame.time.get_ticks()/1000
 font = pygame.font.SysFont("Bungee", 50)
-font2 = pygame.font.SysFont("Bungee", 20)
+font2 = pygame.font.SysFont("Bungee", 30)
 
 #creating the background
 screen_width = 1000
@@ -440,10 +440,10 @@ def game_timebound_mode():
 		screen.blit(BackGround.image, BackGround.rect)
 		pygame.draw.rect(screen, (255,255,255), (5,5,170,50), 0)
 	
-		pygame.draw.rect(screen, (255,255,255), (700,20,300,800), 5)
+		#pygame.draw.rect(screen, (255,255,255), (700,20,300,800), 5)
 
 		s = pygame.Surface((290,740))  # the size of your rect
-		s.set_alpha(128)                # alpha level
+		s.set_alpha(200)                # alpha level
 		s.fill((30,30,30))           # this fills the entire surface
 		screen.blit(s, (705,60))  
 
@@ -453,19 +453,28 @@ def game_timebound_mode():
 		clock_image = pygame.transform.smoothscale(pygame.image.load('clock.png'),(50,50))
 		screen.blit(clock_image,(10,5))
 		time_string = format(int(game_time))
+		ranking = pygame.image.load('ranking3.png')
+		leaderboard = pygame.transform.scale(pygame.image.load('leaderboard.png'),(220,53))
+		player_status = pygame.transform.scale(pygame.image.load('player_status.png'),(230,53))
+		#rank_2 = pygame.transform.scale(pygame.image.load('2nd.png'),(50,50))
+		#rank_3 = pygame.transform.scale(pygame.image.load('3rd.png'),(30,30))
 				
-		top_player_string = "Leaderboard"
+		#top_player_string = "Leaderboard"
 		time_left_string = "TIME LEFT"
 
 		
 		text = font.render(time_string, True, (255,255,255))
 		text2 = font2.render(time_left_string, True, (255,255,255))
-		text3 = font.render(top_player_string, True, (255,255,255))
+		#text3 = font.render(top_player_string, True, (255,255,255))
 		
-
+		screen.blit(ranking, (690, 100))
+		#screen.blit(rank_2, (700, 50))
+		#screen.blit(rank_3, (700, 90))
 		screen.blit(text, (70, 15))
 		screen.blit(text2,(5, 60))
-		screen.blit(text3, (735,25))
+		screen.blit(leaderboard, (743,25))
+		screen.blit(player_status, (743,475))
+
 	   
 	   
 		  
@@ -531,7 +540,7 @@ def game_timebound_mode():
 				if kweks[j].is_collided_with(badbacterium[i]):
 					if kweks[j].kwek_get_size() <= 10:
 					
-						kweks[j].kill
+						kweks[j].die()
 						
 							
 					else:
@@ -569,27 +578,43 @@ def game_timebound_mode():
 						growthvitamins[i].y = random.randrange(60,screen_height-25)
 		
 
-		for key, value in kweks.items() :
+		'''for key, value in kweks.items() :
 			
-			#print (str(max(value.kwek_get_size())) + key)
+		
 			print (key, value.kwek_get_size())
 			if len(kwek_group) == 1:
 
 				if value.kwek_get_size() != 0:
 
-					print ("the winner is "+ str(key) + " with a score of " + str(value.kwek_get_size()))
+					print ("the winner is "+ str(key) + " with a score of " + str(value.kwek_get_size()))'''
+		i = 0
+		for key,value in kweks.items():
+			#print (str(max(value.kwek_get_size())) + key)
+			i += 30
+			print (key, value.kwek_get_size())
+			kplayer = ("Player " + key + " score: " +str(value.kwek_get_size()))
+			ktext = font2.render(kplayer, True, (255,255,255))
+			screen.blit(ktext, (745, 550 + i))
 
-			
+		
 
-		#print (kwek_group.sprites())
-		#if len(kwek_group) == 1:
-			#print (kwek_group)
-		#print (kweks)
+			if len(kwek_group) == 1:
+
+				if value.kwek_get_size() != 0:
+
+					#print ("the winner is "+ str(key) + " with a score of " + str(value.kwek_get_size()))
+					rank = ("The winner is "+ str(key) + " with a score of " + str(value.kwek_get_size()))
+					rtext = font2.render(rank, True, (255,255,255))
+					screen.blit(rtext, (735, 750))
 		
 		for event in pygame.event.get():
 			if event.type == QUIT:
+				
 				pygame.quit()
 				sys.exit()
+			elif event.type == KEYDOWN:
+				game_lobby()
+
 
 		pygame.display.update()
 		Clock.tick(40)
