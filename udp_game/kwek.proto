@@ -1,0 +1,40 @@
+syntax = "proto2";
+
+message Kwek {
+	required string name = 1;
+	optional string id = 2;
+	optional int32 points = 3;
+
+	message Dimension {
+		optional float height =  1;
+		optional float width =  2;
+	}
+
+	message Position {
+		optional float x =  1;
+		optional float y =  2;
+	}
+
+	optional Dimension dimension = 4;
+	optional Position position = 5;
+	optional int32 velocity = 6;
+}
+
+message Bacteria {
+	enum BacType {
+		GOOD = 0;
+		BAD = 1;
+	}
+
+	required int32 type = 1;
+	optional int32 points = 2;
+}
+
+message Vitamin {
+	enum VitType {
+		SPEED = 0;
+		GROW = 1;
+	}	
+	required int32 type = 1;
+	optional int32 points = 2;
+}
