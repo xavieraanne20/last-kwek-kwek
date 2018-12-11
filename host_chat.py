@@ -10,6 +10,7 @@ from tkinter.simpledialog import askstring,askinteger
 host = "202.92.144.45"
 port = 80
 top = tk.Tk()
+top.configure(background="black")
 top.title("Kwek Messenger")
 top.geometry("300x600")
 max_p = 5
@@ -54,21 +55,21 @@ def getPlayer():
 	packetListener = threading.Thread(target=RecvPacket,args=(sock,player),daemon=True)
 	packetListener.start()
 
-mainPage=tk.Toplevel()
-mainPage.title("PLEASE ENTER DETAILS TO PROCEED")
-mainPage.geometry('300x200')
+mainPage=tk.Toplevel(bg="black")
+mainPage.title("HOST WINDOW")
+mainPage.geometry('300x80')
 mainPage.attributes('-topmost','true')
 
-
-z = tk.Label(mainPage, text="Player name: ").grid(row=3)
-playername = tk.Entry(mainPage, width=20, fg="blue")
+a = tk.Label(mainPage,text="KWEK CHAT",bg="black",fg="orange").grid(row=2,column=1)
+z = tk.Label(mainPage, text="Player name: ",bg="black",fg="orange").grid(row=3)
+playername = tk.Entry(mainPage, width=20, fg="black",bg="orange",bd=0)
 playername.grid(row=3, column=1)
-enter1 = tk.Button(mainPage,text='Enter game',command=getPlayer).grid(row=5, column=1)
-chatarea = tk.Text(top, state='disabled', height=35, width=55, fg="blue")
+enter1 = tk.Button(mainPage,text='Enter game',activebackground="orange",activeforeground="white",bd=0,bg="black",fg="orange",command=getPlayer).grid(row=5, column=1)
+chatarea = tk.Text(top, state='disabled', height=35, width=55, bg="black",fg="orange",bd=5)
 chatarea.pack()
-entry = tk.Entry(top,  bd=5, width=50)
+entry = tk.Entry(top,  bd=2, width=50,bg="orange",fg="black")
 entry.pack()
-button = tk.Button(top,text='Submit',command=proceed)
+button = tk.Button(top,bd=3,bg='orange',fg="black",relief="ridge",activebackground="black",activeforeground="orange",text='Send Message',command=proceed)
 top.bind('<Return>', proceed)
 
 button.pack()
@@ -240,11 +241,8 @@ def ConnectToServer():
 	conn.connect((host,port))
 
 
-
-
-
 messages_frame = tk.Frame(top)
-labelID = tk.Label(top,text="",font=('Helvetica', '15'), fg="blue")
+labelID = tk.Label(top,text="",font=('Helvetica', '15'), fg="orange",bg="black")
 labelID.pack()
 
 player=""
