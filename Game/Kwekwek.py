@@ -567,10 +567,23 @@ def game_timebound_mode():
 						print ("NO EFFECT")
 						growthvitamins[i].x = random.randrange(0,screen_width-320)
 						growthvitamins[i].y = random.randrange(60,screen_height-25)
-		#print (len(kweks))
-		print (kwek_group.sprites()[0])
-		if len(kwek_group) == 1:
-			print (kwek_group)
+		
+
+		for key, value in kweks.items() :
+			
+			#print (str(max(value.kwek_get_size())) + key)
+			print (key, value.kwek_get_size())
+			if len(kwek_group) == 1:
+
+				if value.kwek_get_size() != 0:
+
+					print ("the winner is "+ str(key) + " with a score of " + str(value.kwek_get_size()))
+
+			
+
+		#print (kwek_group.sprites())
+		#if len(kwek_group) == 1:
+			#print (kwek_group)
 		#print (kweks)
 		
 		for event in pygame.event.get():
